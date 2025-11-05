@@ -28,13 +28,6 @@ jobs:
           VALIDATE_ALL_CODEBASE: false
           DEFAULT_BRANCH: main
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          VALIDATE_BASH: true
-          VALIDATE_BASH_EXEC: true
-          VALIDATE_MARKDOWN: true
-          VALIDATE_JSON: true
-          VALIDATE_YAML: true
-          VALIDATE_GITHUB_ACTIONS: true
-          VALIDATE_GITLEAKS: true
           VALIDATE_CHECKOV: false
           VALIDATE_JSCPD: false
           VALIDATE_NATURAL_LANGUAGE: false
