@@ -15,16 +15,16 @@ log() {
 }
 
 warn() {
-    echo -e "${YELLOW}[$(date +'%H:%M:%S')] ⚠️  WARNING:${NC} $1"
+    echo -e "${YELLOW}[$(date +'%H:%M:%S')] WARNING:${NC} $1"
 }
 
 error() {
-    echo -e "${RED}[$(date +'%H:%M:%S')] ❌ ERROR:${NC} $1"
+    echo -e "${RED}[$(date +'%H:%M:%S')] ERROR:${NC} $1"
     exit 1
 }
 
 success() {
-    echo -e "${GREEN}[$(date +'%H:%M:%S')] ✅ ${NC}$1"
+    echo -e "${GREEN}[$(date +'%H:%M:%S')]${NC} $1"
 }
 
 section() {

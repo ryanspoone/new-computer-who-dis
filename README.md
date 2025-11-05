@@ -6,16 +6,16 @@ A comprehensive, modular setup script for configuring new macOS development mach
 
 ## Features
 
-- 🎯 **Modular Design** - Run only what you need
-- 🔐 **Security Hardened** - FileVault, firewall, and privacy settings
-- 🛠️ **Complete Dev Environment** - Languages, tools, and databases
-- 🎨 **Customizable** - Configuration file support
-- 📦 **Brewfile Support** - Declarative package management
-- 🐚 **Shell Enhancement** - Oh My Zsh or Starship prompt
-- 💻 **VS Code Ready** - Extensions and settings pre-configured
-- 📝 **Dotfiles Included** - Git, editor, and shell configs
-- 🔄 **Idempotent** - Safe to run multiple times
-- 📊 **Logging** - Full execution logs for troubleshooting
+- **Modular Design** - Run only what you need
+- **Security Hardened** - FileVault, firewall, and privacy settings
+- **Complete Dev Environment** - Languages, tools, and databases
+- **Customizable** - Configuration file support
+- **Brewfile Support** - Declarative package management
+- **Shell Enhancement** - Oh My Zsh or Starship prompt
+- **VS Code Ready** - Extensions and settings pre-configured
+- **Dotfiles Included** - Git, editor, and shell configs
+- **Idempotent** - Safe to run multiple times
+- **Logging** - Full execution logs for troubleshooting
 
 ## Quick Start
 
@@ -37,7 +37,7 @@ chmod +x macos-setup.sh
 
 ### Option 2: Direct Download and Run
 
-⚠️ **Security Warning:** Always review scripts before executing them!
+**Security Warning:** Always review scripts before executing them!
 
 ```bash
 # Download and run
@@ -324,7 +324,7 @@ chmod +x macos-cleanup.sh
 ./macos-cleanup.sh
 ```
 
-⚠️ **Warning:** This will remove applications and configurations!
+**Warning:** This will remove applications and configurations!
 
 ## GitHub Codespaces / Dev Containers
 
@@ -405,10 +405,10 @@ Inspired by various dotfiles repositories and macOS setup scripts from the commu
 
 ## Support
 
-- 🐛 [Report issues](https://github.com/ryanspoone/new-computer-who-dis/issues)
-- 💬 [Discussions](https://github.com/ryanspoone/new-computer-who-dis/discussions)
-- ⭐ Star this repo if you find it useful!
+- [Report issues](https://github.com/ryanspoone/new-computer-who-dis/issues)
+- [Discussions](https://github.com/ryanspoone/new-computer-who-dis/discussions)
+- Star this repo if you find it useful!
 
 ---
 
-**Happy coding! 🚀**
+**Happy coding!**

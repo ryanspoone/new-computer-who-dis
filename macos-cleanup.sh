@@ -2,7 +2,7 @@
 # macOS Cleanup and Uninstall Script
 # Removes packages and resets configurations installed by the setup script
 #
-# ⚠️  WARNING: This will remove applications and configurations!
+# WARNING: This will remove applications and configurations!
 # Review the script before running.
 
 set -euo pipefail
@@ -17,11 +17,11 @@ log() {
 }
 
 warn() {
-    echo -e "${YELLOW}[$(date +'%H:%M:%S')] ⚠️  WARNING:${NC} $1"
+    echo -e "${YELLOW}[$(date +'%H:%M:%S')] WARNING:${NC} $1"
 }
 
 error() {
-    echo -e "${RED}[$(date +'%H:%M:%S')] ❌ ERROR:${NC} $1"
+    echo -e "${RED}[$(date +'%H:%M:%S')] ERROR:${NC} $1"
 }
 
 confirm() {
@@ -42,7 +42,7 @@ cat << "EOF"
 ║                                                          ║
 ║              macOS CLEANUP & UNINSTALL                   ║
 ║                                                          ║
-║  ⚠️  WARNING: This will remove applications and         ║
+║  WARNING: This will remove applications and             ║
 ║     configurations installed by the setup script!       ║
 ║                                                          ║
 ╚══════════════════════════════════════════════════════════╝
@@ -160,7 +160,7 @@ if confirm "Remove global npm packages?"; then
 fi
 
 ### Clean Development Directory ###
-if confirm "Remove ~/dev directory? (⚠️  This contains your projects!)"; then
+if confirm "Remove ~/dev directory? (WARNING: This contains your projects!)"; then
     if [[ -d "$HOME/dev" ]]; then
         warn "This will delete all projects in ~/dev!"
         if confirm "Are you absolutely sure?"; then
