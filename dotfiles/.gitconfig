@@ -1,0 +1,75 @@
+# Git Configuration Template
+# Copy to ~/.gitconfig and customize
+
+[user]
+	name = Your Name
+	email = your.email@example.com
+
+[core]
+	editor = code --wait
+	autocrlf = input
+	excludesfile = ~/.gitignore_global
+
+[init]
+	defaultBranch = main
+
+[pull]
+	rebase = false
+
+[push]
+	default = current
+	autoSetupRemote = true
+
+[merge]
+	conflictstyle = diff3
+
+[fetch]
+	prune = true
+
+[diff]
+	colorMoved = zebra
+
+[color]
+	ui = auto
+
+[alias]
+	# Status and info
+	st = status
+	s = status -sb
+
+	# Branching
+	br = branch
+	co = checkout
+	cob = checkout -b
+
+	# Commits
+	ci = commit
+	cm = commit -m
+	amend = commit --amend --no-edit
+	undo = reset HEAD~1 --mixed
+
+	# Logging
+	lg = log --oneline --graph --decorate --all
+	last = log -1 HEAD
+	ls = log --pretty=format:"%C(yellow)%h%Cred%d\\ %Creset%s%Cblue\\ [%cn]" --decorate
+	ll = log --pretty=format:"%C(yellow)%h%Cred%d\\ %Creset%s%Cblue\\ [%cn]" --decorate --numstat
+
+	# Diffs
+	d = diff
+	ds = diff --staged
+	dc = diff --cached
+
+	# Stashing
+	sl = stash list
+	sa = stash apply
+	ss = stash save
+
+	# Other
+	unstage = reset HEAD --
+	contributors = shortlog --summary --numbered
+
+[filter "lfs"]
+	clean = git-lfs clean -- %f
+	smudge = git-lfs smudge -- %f
+	process = git-lfs filter-process
+	required = true

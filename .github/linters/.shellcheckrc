@@ -1,0 +1,7 @@
+# Shellcheck configuration
+# SC1090: Can't follow non-constant source
+# SC1091: Not following sourced files
+# SC2015: A && B || C pattern is acceptable for our use case
+# SC2016: Single quotes intentional to prevent expansion in echo
+# SC2129: Individual redirects are clearer in our scripts
+disable=SC1090,SC1091,SC2015,SC2016,SC2129

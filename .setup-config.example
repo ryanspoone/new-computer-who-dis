@@ -1,0 +1,60 @@
+# macOS Setup Configuration
+# Copy this file to .setup-config and customize for your needs
+# Usage: cp .setup-config.example .setup-config
+
+# Personal Information
+GIT_NAME="Your Name"
+GIT_EMAIL="your.email@example.com"
+
+# Installation Options (true/false)
+INSTALL_XCODE=true
+INSTALL_ROSETTA=true  # Only for Apple Silicon Macs
+INSTALL_HOMEBREW=true
+INSTALL_FROM_BREWFILE=true
+
+# System Preferences
+CONFIGURE_FINDER=true
+CONFIGURE_DOCK=true
+CONFIGURE_KEYBOARD=true
+CONFIGURE_TRACKPAD=true
+CONFIGURE_SCREEN=true
+
+# Development Tools
+INSTALL_GIT=true
+GENERATE_SSH_KEYS=true
+SETUP_GITHUB_CLI=true
+INSTALL_NODE=true
+INSTALL_PYTHON=true
+INSTALL_DOCKER=true
+
+# Databases
+START_POSTGRESQL=false
+START_MYSQL=false
+START_REDIS=false
+
+# Shell Configuration
+SETUP_ZSH=true
+INSTALL_OH_MY_ZSH=true      # Set to false if you want Starship instead
+INSTALL_STARSHIP=false
+INSTALL_ZSH_PLUGINS=true
+CREATE_ALIASES=true
+SETUP_ENV_VARS=true
+
+# VS Code
+INSTALL_VSCODE=true
+INSTALL_VSCODE_EXTENSIONS=true
+
+# Security
+ENABLE_FIREWALL=true
+ENABLE_FILEVAULT=true
+REQUIRE_PASSWORD=true
+DISABLE_GUEST=true
+LOCK_SCREEN_MESSAGE="If found, please contact: your.email@example.com"
+
+# Directories
+CREATE_DEV_DIR=true
+DEV_DIR_PATH="$HOME/dev"
+
+# Other Options
+RUN_CLEANUP=true
+SHOW_COMPLETION_SUMMARY=true
