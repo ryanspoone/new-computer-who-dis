@@ -129,8 +129,8 @@ log_to_file "=== Setup started ==="
 # Personal information (needed for Git and SSH)
 if [[ -z "${GIT_NAME:-}" ]] || [[ -z "${GIT_EMAIL:-}" ]]; then
     section "Personal Information"
-    read -p "Enter your full name for Git: " GIT_NAME
-    read -p "Enter your email address for Git: " GIT_EMAIL
+    read -r -p "Enter your full name for Git: " GIT_NAME
+    read -r -p "Enter your email address for Git: " GIT_EMAIL
     export GIT_NAME GIT_EMAIL
 fi
 

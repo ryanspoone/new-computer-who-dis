@@ -25,7 +25,7 @@ error() {
 }
 
 confirm() {
-    read -r -p "$(echo -e ${YELLOW}$1 [y/N]${NC}) " response
+    read -r -p "$(echo -e "${YELLOW}$1 [y/N]${NC}") " response
     case "$response" in
         [yY][eE][sS]|[yY])
             return 0
@@ -165,8 +165,8 @@ if confirm "Remove ~/dev directory? (WARNING: This contains your projects!)"; th
         warn "This will delete all projects in ~/dev!"
         if confirm "Are you absolutely sure?"; then
             log "Removing ~/dev directory..."
-            rm -rf "$HOME/dev"
-            log "~/dev removed"
+            rm -rf "${HOME:?}/dev"
+            log "$HOME/dev removed"
         fi
     fi
 fi

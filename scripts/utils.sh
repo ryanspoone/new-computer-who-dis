@@ -35,7 +35,7 @@ section() {
 }
 
 confirm() {
-    read -r -p "$(echo -e ${BLUE}$1 [y/N]${NC}) " response
+    read -r -p "$(echo -e "${BLUE}$1 [y/N]${NC}") " response
     case "$response" in
         [yY][eE][sS]|[yY])
             return 0

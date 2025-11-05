@@ -12,7 +12,7 @@ indent_style = space
 indent_size = 2
 
 [*.{sh,bash}]
-indent_size = 4
+indent_size = 2
 
 [*.md]
 trim_trailing_whitespace = false
@@ -20,6 +20,9 @@ max_line_length = off
 
 [Brewfile]
 indent_size = 2
+
+[.gitconfig]
+indent_style = tab
 
 [Makefile]
 indent_style = tab

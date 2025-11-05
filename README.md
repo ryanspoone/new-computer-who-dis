@@ -164,7 +164,7 @@ cp .setup-config.example .setup-config
 
 ## Project Structure
 
-```
+```text
 .
 ├── macos-setup.sh              # Main orchestration script
 ├── macos-cleanup.sh            # Uninstall/cleanup script
