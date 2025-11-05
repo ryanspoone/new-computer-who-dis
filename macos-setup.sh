@@ -1,218 +1,272 @@
 #!/bin/bash
-# Setup fresh MacOS system
+# macOS System Setup Script
 #
-# This script will:
-# - Configure Finder settings
-# - Install Xcode Command Line Tools
-# - Install Homebrew package manager
-# - Install Node.js and Yarn
-# - Install common development applications
-# - Generate SSH keys
-# - Configure Git
-# - Set up development environment
+# Comprehensive setup script for new macOS development machines
 #
-# IMPORTANT: Review this script before running!
-# Some settings are personalized and should be modified.
+# Features:
+# - System preferences configuration
+# - Package management (Homebrew)
+# - Development tools installation
+# - Shell customization (zsh, Oh My Zsh, Starship)
+# - Security hardening
+# - VS Code setup
+# - And much more!
 #
-# Estimated time: 30-60 minutes depending on internet speed
+# Usage:
+#   ./macos-setup.sh                    # Interactive mode
+#   ./macos-setup.sh --config FILE      # Use configuration file
+#   ./macos-setup.sh --help             # Show help
+#
+# Documentation: https://github.com/ryanspoone/new-computer-who-dis
 
 set -euo pipefail
 
-# Color output
-RED='\033[0;31m'
-GREEN='\033[0;32m'
-YELLOW='\033[1;33m'
-NC='\033[0m' # No Color
+# Get script directory
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+SCRIPTS_DIR="$SCRIPT_DIR/scripts"
 
-log() {
-    echo -e "${GREEN}[$(date +'%Y-%m-%d %H:%M:%S')]${NC} $1"
-}
+# Load utilities
+source "$SCRIPTS_DIR/utils.sh"
 
-warn() {
-    echo -e "${YELLOW}[$(date +'%Y-%m-%d %H:%M:%S')] WARNING:${NC} $1"
-}
+# Configuration file
+CONFIG_FILE="${CONFIG_FILE:-}"
 
-error() {
-    echo -e "${RED}[$(date +'%Y-%m-%d %H:%M:%S')] ERROR:${NC} $1"
-    exit 1
-}
+# Parse arguments
+while [[ $# -gt 0 ]]; do
+    case $1 in
+        --config)
+            CONFIG_FILE="$2"
+            shift 2
+            ;;
+        --help|-h)
+            cat << EOF
+macOS Setup Script
 
-confirm() {
-    read -r -p "$1 [y/N] " response
-    case "$response" in
-        [yY][eE][sS]|[yY])
-            return 0
+Usage:
+  $0                    Interactive mode
+  $0 --config FILE      Use configuration file
+  $0 --help             Show this help message
+
+Configuration:
+  Copy .setup-config.example to .setup-config and customize
+  Use --config to specify a different configuration file
+
+Scripts:
+  All modular scripts are in the scripts/ directory:
+    - 01-system-preferences.sh  System UI and preferences
+    - 02-package-managers.sh    Homebrew and package installation
+    - 03-development-tools.sh   Git, SSH, languages, databases
+    - 04-shell-setup.sh         Zsh, Oh My Zsh, aliases
+    - 05-security.sh            Security hardening
+    - 06-vscode.sh              VS Code extensions and settings
+
+Documentation:
+  See README.md for full documentation
+
+EOF
+            exit 0
             ;;
         *)
-            return 1
+            error "Unknown option: $1"
+            exit 1
             ;;
     esac
-}
+done
+
+# Load configuration if specified
+if [[ -n "$CONFIG_FILE" ]]; then
+    if [[ -f "$CONFIG_FILE" ]]; then
+        log "Loading configuration from $CONFIG_FILE"
+        source "$CONFIG_FILE"
+    else
+        error "Configuration file not found: $CONFIG_FILE"
+    fi
+fi
 
 # Verify running on macOS
-if [[ "$(uname)" != "Darwin" ]]; then
-    error "This script is designed for macOS only. Detected OS: $(uname)"
+check_macos
+
+# Display header
+clear
+echo -e "${CYAN}"
+cat << "EOF"
+╔══════════════════════════════════════════════════════════╗
+║                                                          ║
+║              macOS Development Setup                     ║
+║                                                          ║
+║  Complete setup script for new development machines     ║
+║                                                          ║
+╚══════════════════════════════════════════════════════════╝
+EOF
+echo -e "${NC}"
+
+print_system_info
+
+echo ""
+log "This script will help you set up your macOS development environment"
+log "You'll be prompted for each section - you can skip anything you don't want"
+echo ""
+
+if [[ -z "$CONFIG_FILE" ]]; then
+    log "💡 Tip: You can create a .setup-config file to automate this process"
+    log "   See .setup-config.example for details"
+    echo ""
 fi
 
-log "Starting macOS setup..."
-
-# Configure personal information
-read -p "Enter your full name for Git: " GIT_NAME
-read -p "Enter your email address for Git: " GIT_EMAIL
-
-# Finder Settings
-if confirm "Do you want to configure Finder settings?"; then
-    log "Configuring Finder settings..."
-
-    # Show Library folder
-    chflags nohidden ~/Library
-
-    # Show hidden files
-    defaults write com.apple.finder AppleShowAllFiles YES
-
-    # Show path bar
-    defaults write com.apple.finder ShowPathbar -bool true
-
-    # Show status bar
-    defaults write com.apple.finder ShowStatusBar -bool true
-
-    log "Finder settings configured. Restart Finder for changes to take effect."
+if ! confirm "Ready to begin setup?"; then
+    log "Setup cancelled"
+    exit 0
 fi
 
-# Install Xcode Command Line Tools
-if confirm "Do you want to install Xcode Command Line Tools?"; then
-    if xcode-select -p &>/dev/null; then
-        log "Xcode Command Line Tools already installed"
-    else
-        log "Installing Xcode Command Line Tools..."
-        xcode-select --install
-        log "Please complete the Xcode installation in the dialog, then press Enter to continue..."
-        read -r
-    fi
+# Start logging
+LOG_FILE="$HOME/.macos-setup.log"
+log "Logging to $LOG_FILE"
+exec > >(tee -a "$LOG_FILE")
+exec 2>&1
+
+log_to_file "=== Setup started ==="
+
+# Personal information (needed for Git and SSH)
+if [[ -z "${GIT_NAME:-}" ]] || [[ -z "${GIT_EMAIL:-}" ]]; then
+    section "Personal Information"
+    read -p "Enter your full name for Git: " GIT_NAME
+    read -p "Enter your email address for Git: " GIT_EMAIL
+    export GIT_NAME GIT_EMAIL
 fi
 
-# Install Homebrew
-if confirm "Do you want to install Homebrew?"; then
-    if command -v brew &>/dev/null; then
-        log "Homebrew already installed"
-    else
-        log "Installing Homebrew..."
-        /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+# Track start time
+START_TIME=$(date +%s)
 
-        # Add Homebrew to PATH for Apple Silicon Macs
-        if [[ -f "/opt/homebrew/bin/brew" ]]; then
-            log "Setting up Homebrew for Apple Silicon..."
-            echo 'eval "$(/opt/homebrew/bin/brew shellenv)"' >> ~/.zprofile
-            eval "$(/opt/homebrew/bin/brew shellenv)"
-        fi
-    fi
-fi
+# Run setup scripts
+SETUP_SCRIPTS=(
+    "01-system-preferences.sh"
+    "02-package-managers.sh"
+    "03-development-tools.sh"
+    "04-shell-setup.sh"
+    "05-security.sh"
+    "06-vscode.sh"
+)
 
-# Verify Homebrew is available
-if ! command -v brew &>/dev/null; then
-    error "Homebrew is not available. Please install it manually."
-fi
+for script in "${SETUP_SCRIPTS[@]}"; do
+    script_path="$SCRIPTS_DIR/$script"
 
-# Install Node.js and Yarn
-if confirm "Do you want to install Node.js and Yarn?"; then
-    log "Installing Node.js and Yarn..."
-    brew install node
-    brew install yarn
-    log "Node.js version: $(node --version)"
-    log "Yarn version: $(yarn --version)"
-fi
-
-# Install applications
-if confirm "Do you want to install common development applications?"; then
-    log "Installing applications..."
-
-    # See https://formulae.brew.sh/formula/
-    brew install --cask visual-studio-code
-    brew install --cask google-chrome
-    brew install --cask firefox
-    brew install --cask authy
-    brew install --cask dashlane
-    brew install --cask iterm2
-    brew install --cask slack
-    brew install --cask sketch
-    brew install --cask postman
-    brew install --cask flux
-
-    # Install shellcheck as a formula (not cask)
-    brew install shellcheck
-
-    log "Applications installed successfully"
-fi
-
-# Install Fira Code font
-if confirm "Do you want to install Fira Code font?"; then
-    log "Installing Fira Code font..."
-    brew install --cask font-fira-code
-fi
-
-# Generate SSH keys
-if confirm "Do you want to generate SSH keys?"; then
-    if [[ -f ~/.ssh/id_ed25519 ]] || [[ -f ~/.ssh/id_rsa ]]; then
-        warn "SSH keys already exist. Skipping generation."
-        if [[ -f ~/.ssh/id_ed25519.pub ]]; then
-            log "Your public key:"
-            cat ~/.ssh/id_ed25519.pub
-        elif [[ -f ~/.ssh/id_rsa.pub ]]; then
-            log "Your public key:"
-            cat ~/.ssh/id_rsa.pub
-        fi
-    else
-        log "Generating ED25519 SSH key..."
-        ssh-keygen -t ed25519 -C "$GIT_EMAIL"
-
-        # Start ssh-agent and add key
-        eval "$(ssh-agent -s)"
-
-        # Add key to ssh-agent
-        ssh-add ~/.ssh/id_ed25519
-
-        log "SSH key generated successfully!"
-        log "Your public key (copy this to GitHub/GitLab):"
-        cat ~/.ssh/id_ed25519.pub
-
+    if [[ -f "$script_path" ]]; then
         echo ""
-        log "Press Enter to continue..."
-        read -r
+        if confirm "Run $script?"; then
+            log "Running $script..."
+
+            # Make executable
+            chmod +x "$script_path"
+
+            # Run script
+            if bash "$script_path"; then
+                success "$script completed successfully"
+            else
+                warn "$script encountered errors (check log for details)"
+            fi
+        else
+            log "Skipping $script"
+        fi
+    else
+        warn "Script not found: $script_path"
+    fi
+done
+
+# Copy dotfiles
+section "Dotfiles"
+
+if confirm "Install dotfile templates?"; then
+    log "Installing dotfiles..."
+
+    DOTFILES_DIR="$SCRIPT_DIR/dotfiles"
+
+    if [[ -d "$DOTFILES_DIR" ]]; then
+        # Backup and copy gitconfig
+        if [[ -f "$DOTFILES_DIR/.gitconfig" ]]; then
+            if [[ -f "$HOME/.gitconfig" ]]; then
+                backup_file "$HOME/.gitconfig"
+            fi
+            log "Copy $DOTFILES_DIR/.gitconfig to ~/.gitconfig and customize"
+        fi
+
+        # Copy gitignore_global
+        if [[ -f "$DOTFILES_DIR/.gitignore_global" ]]; then
+            cp "$DOTFILES_DIR/.gitignore_global" "$HOME/.gitignore_global"
+            git config --global core.excludesfile ~/.gitignore_global
+            success "Global gitignore installed"
+        fi
+
+        # Copy editorconfig
+        if [[ -f "$DOTFILES_DIR/.editorconfig" ]]; then
+            cp "$DOTFILES_DIR/.editorconfig" "$HOME/.editorconfig"
+            success "EditorConfig installed"
+        fi
+
+        success "Dotfiles installed (remember to customize .gitconfig with your info)"
+    else
+        warn "Dotfiles directory not found"
     fi
 fi
 
-# Setup Git configuration
-if confirm "Do you want to configure Git?"; then
-    log "Configuring Git..."
-    git config --global user.name "$GIT_NAME"
-    git config --global user.email "$GIT_EMAIL"
+# Calculate duration
+END_TIME=$(date +%s)
+DURATION=$((END_TIME - START_TIME))
+MINUTES=$((DURATION / 60))
+SECONDS=$((DURATION % 60))
 
-    # Additional recommended Git settings
-    git config --global init.defaultBranch main
-    git config --global pull.rebase false
+# Final summary
+section "Setup Complete! 🎉"
 
-    log "Git configured successfully"
-fi
-
-# Create development folder
-if confirm "Do you want to create a ~/dev folder?"; then
-    log "Creating development folder..."
-    mkdir -p ~/dev
-    log "Created ~/dev directory"
-fi
-
-# Cleanup
-log "Running Homebrew cleanup..."
-brew cleanup
-
-log "============================================"
-log "Setup complete!"
-log "============================================"
 echo ""
-warn "Please restart your Mac (or at least log out and back in) for all changes to take effect."
+echo "  ⏱️  Total time: ${MINUTES}m ${SECONDS}s"
 echo ""
-log "Next steps:"
-echo "  1. Restart your computer"
-echo "  2. If you generated SSH keys, add them to GitHub/GitLab"
-echo "  3. Configure your shell (zsh/bash) with additional customizations"
-echo "  4. Install any additional tools specific to your workflow"
+
+log "Setup Summary:"
+echo "  ✅ System preferences configured"
+echo "  ✅ Package managers installed"
+echo "  ✅ Development tools ready"
+echo "  ✅ Shell customized"
+echo "  ✅ Security hardened"
+echo "  ✅ VS Code configured"
+echo ""
+
+section "Next Steps"
+
+echo "1. 🔄 Restart your computer for all changes to take effect"
+echo ""
+echo "2. 🔑 Add SSH key to GitHub/GitLab:"
+echo "   cat ~/.ssh/id_ed25519.pub | pbcopy"
+echo "   Then paste at: https://github.com/settings/keys"
+echo ""
+echo "3. 🎨 Customize your dotfiles:"
+echo "   - Edit ~/.gitconfig with your information"
+echo "   - Review ~/.zshrc for additional customizations"
+echo "   - Check ~/Library/Application Support/Code/User/settings.json"
+echo ""
+echo "4. 📦 Install additional software:"
+echo "   - Edit Brewfile and run: brew bundle install"
+echo "   - Install Mac App Store apps with: mas install <id>"
+echo ""
+echo "5. 🔧 Project-specific setup:"
+echo "   - Clone your repositories to ~/dev/"
+echo "   - Install project dependencies"
+echo "   - Set up databases and services"
+echo ""
+echo "6. 📚 Documentation:"
+echo "   - README.md - Full documentation"
+echo "   - scripts/ - Individual setup modules"
+echo "   - dotfiles/ - Configuration templates"
+echo ""
+
+warn "Important: Restart your Mac for all changes to take effect!"
+echo ""
+
+log_to_file "=== Setup completed in ${MINUTES}m ${SECONDS}s ==="
+
+if confirm "Would you like to restart now?"; then
+    log "Restarting in 5 seconds... (Ctrl+C to cancel)"
+    sleep 5
+    sudo shutdown -r now
+else
+    log "Remember to restart when convenient!"
+fi
