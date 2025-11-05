@@ -261,7 +261,7 @@ if command_exists fzf; then
                 echo "[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh" >> "$HOME/.zshrc"
             fi
         fi
-        $(brew --prefix)/opt/fzf/install --key-bindings --completion --no-update-rc
+        "$(brew --prefix)/opt/fzf/install" --key-bindings --completion --no-update-rc
         success "FZF configured"
     fi
 fi

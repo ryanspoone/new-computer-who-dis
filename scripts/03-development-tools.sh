@@ -11,8 +11,8 @@ section "Development Tools"
 ### Git Configuration ###
 if confirm "Configure Git?"; then
     if [[ -z "${GIT_NAME:-}" ]] || [[ -z "${GIT_EMAIL:-}" ]]; then
-        read -p "Enter your full name for Git: " GIT_NAME
-        read -p "Enter your email address for Git: " GIT_EMAIL
+        read -r -p "Enter your full name for Git: " GIT_NAME
+        read -r -p "Enter your email address for Git: " GIT_EMAIL
         export GIT_NAME GIT_EMAIL
     fi
 
@@ -110,7 +110,7 @@ if command_exists node; then
     if confirm "Configure npm global packages location?"; then
         # Set npm global directory to user directory
         mkdir -p ~/.npm-global
-        npm config set prefix '~/.npm-global'
+        npm config set prefix "$HOME/.npm-global"
 
         # Add to PATH if not already there
         if [[ -f "$HOME/.zshrc" ]] && ! grep -q "npm-global/bin" "$HOME/.zshrc"; then

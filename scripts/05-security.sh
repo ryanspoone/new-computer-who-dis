@@ -57,7 +57,7 @@ fi
 
 ### Show lock screen message ###
 if confirm "Set lock screen message with contact info?"; then
-    read -p "Enter lock screen message (e.g., 'If found, please contact: your@email.com'): " lock_message
+    read -r -p "Enter lock screen message (e.g., 'If found, please contact: your@email.com'): " lock_message
     if [[ -n "$lock_message" ]]; then
         sudo defaults write /Library/Preferences/com.apple.loginwindow LoginwindowText "$lock_message"
         success "Lock screen message set"
